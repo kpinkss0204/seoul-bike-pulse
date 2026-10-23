@@ -2,10 +2,15 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
-COPY mlops/requirements-runtime.txt ./requirements.txt
+COPY mlops/requirements-runtime.txt \
+ ./requirements-runtime.txt
+COPY mlops/data/requirements-transform.txt \
+ ./requirements-transform.txt
 RUN pip install --no-cache-dir \
- -r requirements.txt
-COPY mlops/data/quality_worker.py ./quality_worker.py
+ -r requirements-runtime.txt \
+ -r requirements-transform.txt
+COPY mlops/data/transform_worker.py \
+ ./transform_worker.py
 COPY config/project_contract.json \
  ./config/project_contract.json
-CMD ["python", "-u", "/app/quality_worker.py"]
+CMD ["python", "-u", "/app/transform_worker.py"]
