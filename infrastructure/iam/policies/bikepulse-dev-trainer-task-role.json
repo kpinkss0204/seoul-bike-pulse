@@ -1,0 +1,50 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadTrainingDataAndModels",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/curated/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/features/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/splits/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/models/*"
+      ]
+    },
+    {
+      "Sid": "WriteModels",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/models/*"
+      ]
+    },
+    {
+      "Sid": "ReadModelRegistry",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Query"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-model-registry",
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-model-registry/index/*"
+      ]
+    },
+    {
+      "Sid": "RegisterCandidateModel",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-model-registry"
+      ]
+    }
+  ]
+}
