@@ -66,10 +66,29 @@ with open(sys.argv[1], "w") as f:
  json.dump(document, f)
 PY
 
-TASK_DEFINITION=$(aws ecs describe-task-definition \
- --task-definition bikepulse-dev-processor-task \
- --query 'taskDefinition.taskDefinitionArn' \
+TASK_DEFINITION=""
+for ARN in $(aws ecs list-task-definitions \
+ --family-prefix bikepulse-dev-processor-task \
+ --status ACTIVE \
+ --sort DESC \
+ --query 'taskDefinitionArns[]' \
  --output text)
+do
+ CANDIDATE_IMAGE=$(aws ecs describe-task-definition \
+ --task-definition "$ARN" \
+ --query 'taskDefinition.containerDefinitions[0].image' \
+ --output text)
+ if [[ "$CANDIDATE_IMAGE" == *"/bikepulse/processor:i001" ]]
+ then
+ TASK_DEFINITION="$ARN"
+ break
+ fi
+done
+if [[ -z "$TASK_DEFINITION" ]]
+then
+ echo "ERROR: processor:i001 revision not found."
+ exit 1
+fi
 
 IMAGE=$(aws ecs describe-task-definition \
  --task-definition "$TASK_DEFINITION" \

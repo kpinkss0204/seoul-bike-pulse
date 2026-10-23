@@ -1,0 +1,16 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadFeatureAndSplitArtifacts",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/features/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/splits/*"
+      ]
+    }
+  ]
+}
