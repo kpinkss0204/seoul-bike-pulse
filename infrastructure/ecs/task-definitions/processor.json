@@ -15,7 +15,7 @@
   "containerDefinitions": [
     {
       "name": "processor",
-      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/processor:b001",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/processor:h001",
       "essential": true,
       "environment": [
         {
@@ -34,7 +34,12 @@
           "awslogs-region": "ap-northeast-2",
           "awslogs-stream-prefix": "ecs"
         }
-      }
+      },
+      "command": [
+        "python",
+        "-u",
+        "/app/quality_worker.py"
+      ]
     }
   ]
 }
