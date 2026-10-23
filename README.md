@@ -88,3 +88,4 @@ python -m pytest -q
 - 관리자 기능 인증 및 권한 검사
 - AWS AI 관리형 서비스 미사용
 # seoul-bike-pulse
+# seoul-bike-pulse
