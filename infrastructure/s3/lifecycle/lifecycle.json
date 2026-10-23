@@ -1,0 +1,27 @@
+{
+ "Rules": [
+ {
+ "ID": "bikepulse-abort-incomplete-multipart-7d",
+ "Status": "Enabled",
+ "Filter": {
+ "Prefix": ""
+ },
+ "AbortIncompleteMultipartUpload": {
+ "DaysAfterInitiation": 7
+ }
+ },
+ {
+ "ID": "bikepulse-smoke-expire-7d",
+ "Status": "Enabled",
+ "Filter": {
+ "Prefix": "system/healthchecks/"
+ },
+ "Expiration": {
+ "Days": 7
+ },
+ "NoncurrentVersionExpiration": {
+ "NoncurrentDays": 7
+ }
+ }
+ ]
+}
