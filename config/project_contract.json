@@ -1,0 +1,94 @@
+{
+ "project": {
+ "id": "bikepulse",
+ "name": "SEOUL BIKE PULSE",
+ "environment": "dev",
+ "aws_region": "ap-northeast-2",
+ "timezone": "Asia/Seoul"
+ },
+"dataset": {
+ "name": "Seoul Bike Sharing Demand",
+ "source": "UCI",
+ "dataset_id": 560,
+ "filename": "SeoulBikeData.csv",
+ "expected_rows": 8760,
+ "expected_columns": 14,
+ "date_format": "%d/%m/%Y",
+ "target": "rented_bike_count",
+ "version": "dv001"
+ },
+"prediction": {
+ "model_id": "bike-demand",
+ "prediction_type": "what_if",
+ "unit": "rentals_per_hour",
+ "input_features": [
+ "date",
+ "hour",
+ "temperature_c",
+ "humidity_pct",
+ "wind_speed_mps",
+ "rainfall_mm",
+ "snowfall_cm",
+ "is_holiday"
+ ],
+ "derived_features": [
+ "month",
+ "day_of_week",
+ "is_weekend",
+ "season",
+ "hour_sin",
+ "hour_cos"
+ ],
+ "model_features": [
+ "hour",
+ "temperature_c",
+ "humidity_pct",
+ "wind_speed_mps",
+ "rainfall_mm",
+ "snowfall_cm",
+ "is_holiday",
+ "month",
+ "day_of_week",
+ "is_weekend",
+ "season",
+ "hour_sin",
+ "hour_cos"
+ ]
+ },
+"training": {
+ "filter_functioning_day": true,
+ "train_start": "2017-12-01",
+ "train_end": "2018-07-31",
+ "validation_start": "2018-08-01",
+ "validation_end": "2018-09-30",
+ "test_start": "2018-10-01",
+ "test_end": "2018-11-30",
+ "feature_version": "fv001",
+ "baseline_model": "Ridge",
+ "candidate_models": [
+ "RandomForestRegressor",
+ "XGBRegressor"
+ ]
+ },
+"evaluation": {
+ "primary_metric": "mae",
+ "secondary_metrics": [
+ "rmse",
+ "r2"
+ ],
+ "minimum_mae_improvement_pct": 5,
+ "maximum_rmse_increase_pct": 10,
+ "lower_is_better": true
+ },
+"mlops": {
+ "orchestrator": "AWS Step Functions",
+ "workflow_type": "STANDARD",
+ "execution_platform": "ECS Fargate",
+ "pipelines": [
+ "data",
+ "training",
+ "deployment",
+ "monitoring"
+ ]
+ }
+}

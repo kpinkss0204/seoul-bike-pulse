@@ -1,0 +1,96 @@
+.app-shell {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 36px 24px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.logo {
+  font-size: 25px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #67e8f9;
+}
+.version {
+  color: #94a3b8;
+  font-size: 14px;
+}
+.hero {
+  padding: 105px 0 65px;
+}
+.eyebrow {
+  color: #22d3ee;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 3px;
+}
+.hero h1 {
+  margin: 18px 0;
+  font-size: clamp(48px, 8vw, 90px);
+  font-weight: 900;
+  line-height: 1.12;
+  letter-spacing: -3px;
+}
+.hero h1 span {
+  background: linear-gradient(
+    90deg,
+    #22d3ee,
+    #818cf8,
+    #c084fc
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+.hero p {
+  font-size: 20px;
+  color: #94a3b8;
+  line-height: 1.7;
+}
+.status-panel {
+  padding: 32px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(103, 232, 249, 0.15);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+.status-panel h2 {
+  margin-top: 0;
+  color: #f8fafc;
+}
+.status-success {
+  color: #cbd5e1;
+}
+.status-title {
+  font-size: 21px;
+  font-weight: 800;
+  color: #4ade80;
+}
+.status-error {
+  color: #f87171;
+  font-weight: 700;
+}
+footer {
+  margin-top: 80px;
+  color: #64748b;
+  text-align: center;
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero {
+    padding: 65px 0 45px;
+  }
+  .status-panel {
+    padding: 22px;
+  }
+}

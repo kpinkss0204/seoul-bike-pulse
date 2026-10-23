@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+# Python virtual environments
+.venv/
+venv/
+env/
+# Node.js
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+# Local environment variables
+.env
+.env.*
+!.env.example
+!**/.env.example
+# AWS local credentials
+.aws/
+credentials
+*.pem
+*.key
+*.p12
+# Model artifacts
+*.joblib
+*.pkl
+*.pickle
+*.onnx
+# Dataset artifacts
+*.csv
+*.parquet
+*.feather
+# Logs
+*.log
+logs/
+# OS / Editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
