@@ -53,3 +53,5 @@ temp/
 *.bak
 # Local dataset validation artifacts
 /data/validation/
+# Local EDA outputs
+/data/eda/
