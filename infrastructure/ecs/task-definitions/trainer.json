@@ -4,7 +4,7 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "1024",
+  "cpu": "2048",
   "memory": "4096",
   "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
   "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-trainer-task-role",
@@ -15,7 +15,7 @@
   "containerDefinitions": [
     {
       "name": "trainer",
-      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/trainer:m001",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/trainer:n001",
       "essential": true,
       "environment": [
         {
@@ -38,7 +38,7 @@
       "command": [
         "python",
         "-u",
-        "/app/training_worker.py"
+        "/app/xgboost_worker.py"
       ]
     }
   ]

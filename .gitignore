@@ -57,3 +57,5 @@ temp/
 /data/eda/
 # Feature Engineering artifacts
 /data/features/
+# Local XGBoost experiments
+/data/xgboost/
