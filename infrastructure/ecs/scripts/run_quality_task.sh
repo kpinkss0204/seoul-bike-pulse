@@ -71,8 +71,32 @@ echo "Input : $INPUT_KEY"
 echo ""
 
 # Check that the latest definition uses the H-stage image.
+QUALITY_TASK_DEF_ARN=""
+for ARN in $(aws ecs list-task-definitions \
+ --family-prefix bikepulse-dev-processor-task \
+ --status ACTIVE \
+ --sort DESC \
+ --query 'taskDefinitionArns[]' \
+ --output text)
+do
+ CANDIDATE_IMAGE=$(aws ecs describe-task-definition \
+ --task-definition "$ARN" \
+ --query 'taskDefinition.containerDefinitions[0].image' \
+ --output text)
+ if [[ "$CANDIDATE_IMAGE" == *"/bikepulse/processor:h001" ]]
+ then
+ QUALITY_TASK_DEF_ARN="$ARN"
+ break
+ fi
+done
+if [[ -z "$QUALITY_TASK_DEF_ARN" ]]
+then
+ echo "ERROR: H-stage processor:h001 task revision not found."
+ exit 1
+fi
+echo "QUALITY TASK DEFINITION: $QUALITY_TASK_DEF_ARN"
 CURRENT_IMAGE=$(aws ecs describe-task-definition \
- --task-definition bikepulse-dev-processor-task \
+ --task-definition "$QUALITY_TASK_DEF_ARN" \
  --query 'taskDefinition.containerDefinitions[0].image' \
  --output text)
 
@@ -85,7 +109,7 @@ fi
 
 RESPONSE=$(aws ecs run-task \
  --cluster "$ECS_CLUSTER" \
- --task-definition bikepulse-dev-processor-task \
+ --task-definition "$QUALITY_TASK_DEF_ARN" \
  --launch-type FARGATE \
  --platform-version LATEST \
  --count 1 \
