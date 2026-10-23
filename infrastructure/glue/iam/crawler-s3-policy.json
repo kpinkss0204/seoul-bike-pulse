@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadBucketInformation",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetBucketLocation",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2"
+      ]
+    },
+    {
+      "Sid": "ReadCuratedParquetOnly",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/curated/dataset=seoul-bike/*"
+      ]
+    }
+  ]
+}
