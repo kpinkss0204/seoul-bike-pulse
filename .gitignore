@@ -60,3 +60,6 @@ tmp/
 temp/
 *.tmp
 *.bak
+
+# Local dataset validation artifacts
+/data/validation/
