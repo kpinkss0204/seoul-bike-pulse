@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -euo pipefail
 
 : "${ECS_CLUSTER:?ECS_CLUSTER is required}"
@@ -10,124 +9,119 @@ set -euo pipefail
 : "${SG_MLOPS:?SG_MLOPS is required}"
 
 run_test() {
-  local COMPONENT="$1"
-  local SUBNET="$2"
-  local SECURITY_GROUP="$3"
+ local COMPONENT="$1"
+ local SUBNET="$2"
+ local SECURITY_GROUP="$3"
+ local FAMILY="bikepulse-dev-${COMPONENT}-task"
 
-  local FAMILY="bikepulse-dev-${COMPONENT}-task"
+ echo ""
+ echo "=========================================="
+ echo "RUNNING: $COMPONENT"
+ echo "=========================================="
 
-  echo ""
-  echo "=========================================="
-  echo "RUNNING: $COMPONENT"
-  echo "=========================================="
+ local OVERRIDES='{}'
+ if [[ "$COMPONENT" == "api" ]]
+ then
+ OVERRIDES='{
+ "containerOverrides": [
+ {
+ "name": "api",
+ "command": [
+ "python",
+ "-m",
+ "app.smoke"
+ ]
+ }
+ ]
+ }'
+ elif [[ "$COMPONENT" == "frontend" ]]
+ then
+ OVERRIDES='{
+ "containerOverrides": [
+ {
+ "name": "frontend",
+ "command": [
+ "/bin/sh",
+ "-c",
+ "nginx && wget -q -O /dev/null http://127.0.0.1/ && echo FRONTEND_SMOKE_PASSED"
+ ]
+ }
+ ]
+ }'
+ fi
 
-  local OVERRIDES='{}'
+ local RESPONSE
+ RESPONSE=$(aws ecs run-task \
+ --cluster "$ECS_CLUSTER" \
+ --task-definition "$FAMILY" \
+ --launch-type FARGATE \
+ --platform-version LATEST \
+ --count 1 \
+ --network-configuration \
+ "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
+ --overrides "$OVERRIDES" \
+ --output json)
 
-  if [[ "$COMPONENT" == "api" ]]
-  then
-    OVERRIDES='{
-      "containerOverrides": [
-        {
-          "name": "api",
-          "command": [
-            "python",
-            "-m",
-            "app.smoke"
-          ]
-        }
-      ]
-    }'
-  elif [[ "$COMPONENT" == "frontend" ]]
-  then
-    OVERRIDES='{
-      "containerOverrides": [
-        {
-          "name": "frontend",
-          "command": [
-            "/bin/sh",
-            "-c",
-            "nginx && wget -q -O /dev/null http://127.0.0.1/ && echo FRONTEND_SMOKE_PASSED"
-          ]
-        }
-      ]
-    }'
-  fi
+ echo "$RESPONSE" | jq -e '
+ (.failures | length == 0)
+ and
+ (.tasks | length == 1)
+ ' > /dev/null || {
+ echo "$RESPONSE" | jq .
+ echo "TASK START FAILED: $COMPONENT"
+ return 1
+ }
 
-  local RESPONSE
+ local TASK_ARN
+ TASK_ARN=$(echo "$RESPONSE" \
+ | jq -r '.tasks[0].taskArn')
 
-  RESPONSE=$(aws ecs run-task \
-    --cluster "$ECS_CLUSTER" \
-    --task-definition "$FAMILY" \
-    --launch-type FARGATE \
-    --platform-version LATEST \
-    --count 1 \
-    --network-configuration \
-      "awsvpcConfiguration={subnets=[$SUBNET],securityGroups=[$SECURITY_GROUP],assignPublicIp=DISABLED}" \
-    --overrides "$OVERRIDES" \
-    --output json)
+ echo "TASK ARN: $TASK_ARN"
+ echo "Waiting for task completion..."
 
-  echo "$RESPONSE" | jq -e '
-    (.failures | length == 0)
-    and
-    (.tasks | length == 1)
-  ' > /dev/null || {
-    echo "$RESPONSE" | jq .
-    echo "TASK START FAILED: $COMPONENT"
-    return 1
-  }
+ aws ecs wait tasks-stopped \
+ --cluster "$ECS_CLUSTER" \
+ --tasks "$TASK_ARN"
 
-  local TASK_ARN
+ local EXIT_CODE
+ EXIT_CODE=$(aws ecs describe-tasks \
+ --cluster "$ECS_CLUSTER" \
+ --tasks "$TASK_ARN" \
+ --query 'tasks[0].containers[0].exitCode' \
+ --output text)
 
-  TASK_ARN=$(echo "$RESPONSE" \
-    | jq -r '.tasks[0].taskArn')
+ echo "EXIT CODE: $EXIT_CODE"
 
-  echo "TASK ARN: $TASK_ARN"
-  echo "Waiting for task completion..."
+ local LOG_GROUP="/ecs/bikepulse-dev/${COMPONENT}"
+ local TASK_ID="${TASK_ARN##*/}"
+ local LOG_STREAM="ecs/${COMPONENT}/${TASK_ID}"
 
-  aws ecs wait tasks-stopped \
-    --cluster "$ECS_CLUSTER" \
-    --tasks "$TASK_ARN"
+ echo ""
+ echo "CloudWatch log stream:"
+ echo "$LOG_STREAM"
 
-  local EXIT_CODE
+ sleep 5
 
-  EXIT_CODE=$(aws ecs describe-tasks \
-    --cluster "$ECS_CLUSTER" \
-    --tasks "$TASK_ARN" \
-    --query 'tasks[0].containers[0].exitCode' \
-    --output text)
+ aws logs get-log-events \
+ --log-group-name "$LOG_GROUP" \
+ --log-stream-name "$LOG_STREAM" \
+ --query 'events[].message' \
+ --output text || true
 
-  echo "EXIT CODE: $EXIT_CODE"
+ if [[ "$EXIT_CODE" != "0" ]]
+ then
+ echo "SMOKE TEST FAILED: $COMPONENT"
+ return 1
+ fi
 
-  local LOG_GROUP="/ecs/bikepulse-dev/${COMPONENT}"
-  local TASK_ID="${TASK_ARN##*/}"
-  local LOG_STREAM="ecs/${COMPONENT}/${TASK_ID}"
-
-  echo ""
-  echo "CloudWatch log stream:"
-  echo "$LOG_STREAM"
-
-  sleep 5
-
-  aws logs get-log-events \
-    --log-group-name "$LOG_GROUP" \
-    --log-stream-name "$LOG_STREAM" \
-    --query 'events[].message' \
-    --output text || true
-
-  if [[ "$EXIT_CODE" != "0" ]]
-  then
-    echo "SMOKE TEST FAILED: $COMPONENT"
-    return 1
-  fi
-
-  echo "SMOKE TEST PASSED: $COMPONENT"
+ echo "SMOKE TEST PASSED: $COMPONENT"
 }
 
 run_test processor "$PRIVATE_A" "$SG_MLOPS"
-run_test trainer   "$PRIVATE_A" "$SG_MLOPS"
-run_test monitor   "$PRIVATE_C" "$SG_MLOPS"
-run_test api       "$PRIVATE_A" "$SG_API"
-run_test frontend  "$PRIVATE_C" "$SG_FRONTEND"
+run_test trainer "$PRIVATE_A" "$SG_MLOPS"
+run_test monitor "$PRIVATE_C" "$SG_MLOPS"
+run_test api "$PRIVATE_A" "$SG_API"
+run_test frontend "$PRIVATE_C" "$SG_FRONTEND"
 
 echo ""
 echo "=========================================="
