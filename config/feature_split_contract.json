@@ -1,0 +1,21 @@
+{
+  "project": "bikepulse",
+  "dataset_version": "dv001",
+  "feature_version": "fv001",
+  "strategy": "chronological-calendar-day",
+  "boundary_source": "existing-project-contract",
+  "timezone": "Asia/Seoul",
+  "timestamp_storage": "local-time-without-timezone",
+  "boundaries": {
+    "train_start": "2017-12-01",
+    "train_end": "2018-07-31",
+    "validation_start": "2018-08-01",
+    "validation_end": "2018-09-30",
+    "test_start": "2018-10-01",
+    "test_end": "2018-11-30"
+  },
+  "training_filter": {
+    "is_functioning_day": true
+  },
+  "preprocessing_policy": "Fit learned preprocessing only on Train"
+}

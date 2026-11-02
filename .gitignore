@@ -67,3 +67,5 @@ temp/
 /data/validation/
 # Local EDA outputs
 /data/eda/
+# Feature Engineering artifacts
+/data/features/
