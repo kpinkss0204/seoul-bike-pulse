@@ -4,8 +4,8 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "256",
-  "memory": "512",
+  "cpu": "512",
+  "memory": "1024",
   "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
   "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-processor-task-role",
   "runtimePlatform": {
@@ -15,7 +15,7 @@
   "containerDefinitions": [
     {
       "name": "processor",
-      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/processor:h001",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/processor:i001",
       "essential": true,
       "environment": [
         {
@@ -38,7 +38,7 @@
       "command": [
         "python",
         "-u",
-        "/app/quality_worker.py"
+        "/app/transform_worker.py"
       ]
     }
   ]

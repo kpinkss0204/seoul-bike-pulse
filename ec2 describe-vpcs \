@@ -1,0 +1,53 @@
+-----------------------------------------------------------------------------------------------
+|                                     ListTaskDefinitions                                     |
++---------------------------------------------------------------------------------------------+
+[2m[33m|[0m|                                    taskDefinitionArns                                     |[2m[33m|[0m
+[2m[33m|[0m+-------------------------------------------------------------------------------------------+[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:14[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:13[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:12[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:11[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:10[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:9[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:8[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:7[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:6[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:5[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:4[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:3[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:2[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:1[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:11[0m  |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:10[0m  |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:9[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:8[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:7[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:6[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:5[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:4[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:3[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:2[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:1[0m   |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:8[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:7[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:6[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:5[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:4[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:3[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:2[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:1[0m     |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:7[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:6[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:5[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:4[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:3[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:2[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-frontend-task:1[0m    |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:7[0m         |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:6[0m         |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:5[0m         |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:4[0m         |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:3[0m         |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:2[0m         |[2m[33m|[0m
+[2m[33m|[0m|  [1m[34marn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-api-task:1[0m         |[2m[33m|[0m
+[2m[33m|[0m+-------------------------------------------------------------------------------------------+[2m[33m|[0m

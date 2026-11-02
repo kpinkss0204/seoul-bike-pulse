@@ -1,0 +1,64 @@
+{
+    "logGroups": [
+        {
+            "logGroupName": "/ecs/bikepulse-dev/api",
+            "creationTime": 1793582783255,
+            "retentionInDays": 7,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/api:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/api",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        },
+        {
+            "logGroupName": "/ecs/bikepulse-dev/frontend",
+            "creationTime": 1793582781757,
+            "retentionInDays": 7,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/frontend:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/frontend",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        },
+        {
+            "logGroupName": "/ecs/bikepulse-dev/monitor",
+            "creationTime": 1793582787959,
+            "retentionInDays": 7,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/monitor:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/monitor",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        },
+        {
+            "logGroupName": "/ecs/bikepulse-dev/processor",
+            "creationTime": 1793582784795,
+            "retentionInDays": 7,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/processor:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/processor",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        },
+        {
+            "logGroupName": "/ecs/bikepulse-dev/trainer",
+            "creationTime": 1793582786391,
+            "retentionInDays": 7,
+            "metricFilterCount": 0,
+            "arn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/trainer:*",
+            "storedBytes": 0,
+            "logGroupClass": "STANDARD",
+            "logGroupArn": "arn:aws:logs:ap-northeast-2:905765459883:log-group:/ecs/bikepulse-dev/trainer",
+            "deletionProtectionEnabled": false,
+            "bearerTokenAuthenticationEnabled": false
+        }
+    ]
+}
