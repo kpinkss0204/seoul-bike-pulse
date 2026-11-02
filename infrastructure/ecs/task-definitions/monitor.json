@@ -1,0 +1,40 @@
+{
+  "family": "bikepulse-dev-monitor-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-monitor-task-role",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "containerDefinitions": [
+    {
+      "name": "monitor",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/monitor:b001",
+      "essential": true,
+      "environment": [
+        {
+          "name": "BIKEPULSE_BUCKET",
+          "value": "bikepulse-905765459883-ap-northeast-2"
+        },
+        {
+          "name": "AWS_DEFAULT_REGION",
+          "value": "ap-northeast-2"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/bikepulse-dev/monitor",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
