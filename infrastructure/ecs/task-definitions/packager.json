@@ -1,0 +1,57 @@
+{
+  "family": "bikepulse-dev-trainer-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-trainer-task-role",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "containerDefinitions": [
+    {
+      "name": "trainer",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/trainer:p001",
+      "essential": true,
+      "environment": [
+        {
+          "name": "BIKEPULSE_BUCKET",
+          "value": "bikepulse-905765459883-ap-northeast-2"
+        },
+        {
+          "name": "AWS_DEFAULT_REGION",
+          "value": "ap-northeast-2"
+        },
+        {
+          "name": "SELECTION_ID",
+          "value": "sel-20261102T081833"
+        },
+        {
+          "name": "EVALUATION_RUN_ID",
+          "value": "o-20261102T082141-22383"
+        },
+        {
+          "name": "MODEL_VERSION",
+          "value": "mv001"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/bikepulse-dev/trainer",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "entryPoint": [
+        "python",
+        "-u",
+        "/app/package_worker.py"
+      ]
+    }
+  ]
+}

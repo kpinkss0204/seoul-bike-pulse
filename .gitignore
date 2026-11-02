@@ -75,3 +75,7 @@ temp/
 /data/xgboost/
 # Final model evaluation artifacts
 /data/evaluation/
+# Local model packaging data
+/data/package/
+# Machine learning model binaries
+*.joblib
