@@ -73,3 +73,5 @@ temp/
 /data/training/
 # Local XGBoost experiments
 /data/xgboost/
+# Final model evaluation artifacts
+/data/evaluation/
