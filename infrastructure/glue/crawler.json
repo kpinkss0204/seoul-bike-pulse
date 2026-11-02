@@ -1,0 +1,20 @@
+{
+  "Name": "bikepulse-dev-curated-crawler",
+  "Role": "arn:aws:iam::905765459883:role/bikepulse-dev-glue-crawler-role",
+  "DatabaseName": "bikepulse_dev",
+  "Description": "Curated Seoul Bike Parquet crawler",
+  "Targets": {
+    "S3Targets": [
+      {
+        "Path": "s3://bikepulse-905765459883-ap-northeast-2/curated/dataset=seoul-bike/"
+      }
+    ]
+  },
+  "RecrawlPolicy": {
+    "RecrawlBehavior": "CRAWL_EVERYTHING"
+  },
+  "SchemaChangePolicy": {
+    "UpdateBehavior": "UPDATE_IN_DATABASE",
+    "DeleteBehavior": "LOG"
+  }
+}
