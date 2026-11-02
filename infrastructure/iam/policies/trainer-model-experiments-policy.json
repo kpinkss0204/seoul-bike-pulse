@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadFeatureExecutionReports",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/curated/_feature_reports/*"
+      ]
+    },
+    {
+      "Sid": "ReadWriteModelExperiments",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/models/*"
+      ]
+    }
+  ]
+}

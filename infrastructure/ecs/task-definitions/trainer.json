@@ -4,8 +4,8 @@
   "requiresCompatibilities": [
     "FARGATE"
   ],
-  "cpu": "256",
-  "memory": "512",
+  "cpu": "1024",
+  "memory": "4096",
   "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
   "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-trainer-task-role",
   "runtimePlatform": {
@@ -15,7 +15,7 @@
   "containerDefinitions": [
     {
       "name": "trainer",
-      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/trainer:b001",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/trainer:m001",
       "essential": true,
       "environment": [
         {
@@ -34,7 +34,12 @@
           "awslogs-region": "ap-northeast-2",
           "awslogs-stream-prefix": "ecs"
         }
-      }
+      },
+      "command": [
+        "python",
+        "-u",
+        "/app/training_worker.py"
+      ]
     }
   ]
 }

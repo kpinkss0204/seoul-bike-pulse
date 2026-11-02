@@ -69,3 +69,5 @@ temp/
 /data/eda/
 # Feature Engineering artifacts
 /data/features/
+# Local model training data and artifacts
+/data/training/
