@@ -1,0 +1,43 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadMonitoringData",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/curated/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/features/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/models/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/prediction-logs/*",
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/monitoring/*"
+      ]
+    },
+    {
+      "Sid": "WriteMonitoringReports",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/monitoring/*"
+      ]
+    },
+    {
+      "Sid": "ReadRegistryAndPredictionEvents",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:GetItem",
+        "dynamodb:Query"
+      ],
+      "Resource": [
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-model-registry",
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-model-registry/index/*",
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-prediction-events",
+        "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-prediction-events/index/*"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "StartDataPipeline",
+      "Effect": "Allow",
+      "Action": [
+        "states:StartExecution"
+      ],
+      "Resource": [
+        "arn:aws:states:ap-northeast-2:905765459883:stateMachine:bikepulse-dev-data-pipeline"
+      ]
+    }
+  ]
+}

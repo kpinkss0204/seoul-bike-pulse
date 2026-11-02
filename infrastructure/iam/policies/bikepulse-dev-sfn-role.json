@@ -1,0 +1,87 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RunApprovedECSTasks",
+      "Effect": "Allow",
+      "Action": [
+        "ecs:RunTask"
+      ],
+      "Resource": [
+        "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:*",
+        "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:*",
+        "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-monitor-task:*"
+      ]
+    },
+    {
+      "Sid": "ObserveAndStopStartedTasks",
+      "Effect": "Allow",
+      "Action": [
+        "ecs:DescribeTasks",
+        "ecs:StopTask"
+      ],
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Sid": "ManageECSSyncEvents",
+      "Effect": "Allow",
+      "Action": [
+        "events:PutRule",
+        "events:PutTargets",
+        "events:DescribeRule"
+      ],
+      "Resource": [
+        "arn:aws:events:ap-northeast-2:905765459883:rule/StepFunctionsGetEventsForECSTaskRule"
+      ]
+    },
+    {
+      "Sid": "PassApprovedECSTaskRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": [
+        "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
+        "arn:aws:iam::905765459883:role/bikepulse-dev-processor-task-role",
+        "arn:aws:iam::905765459883:role/bikepulse-dev-trainer-task-role",
+        "arn:aws:iam::905765459883:role/bikepulse-dev-monitor-task-role"
+      ],
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ecs-tasks.amazonaws.com"
+        }
+      }
+    },
+    {
+      "Sid": "PublishOperationsAlerts",
+      "Effect": "Allow",
+      "Action": [
+        "sns:Publish"
+      ],
+      "Resource": [
+        "arn:aws:sns:ap-northeast-2:905765459883:bikepulse-dev-alerts"
+      ]
+    },
+    {
+      "Sid": "WriteStepFunctionsCloudWatchLogs",
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogDelivery",
+        "logs:CreateLogStream",
+        "logs:GetLogDelivery",
+        "logs:UpdateLogDelivery",
+        "logs:DeleteLogDelivery",
+        "logs:ListLogDeliveries",
+        "logs:PutLogEvents",
+        "logs:PutResourcePolicy",
+        "logs:DescribeResourcePolicies",
+        "logs:DescribeLogGroups"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
