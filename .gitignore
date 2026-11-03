@@ -79,3 +79,5 @@ temp/
 /data/package/
 # Machine learning model binaries
 *.joblib
+# Local DynamoDB registry execution results
+/data/registry/
