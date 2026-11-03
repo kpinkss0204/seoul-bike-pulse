@@ -1,0 +1,78 @@
+{
+  "family": "bikepulse-dev-api-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-api-task-role",
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX",
+    "cpuArchitecture": "X86_64"
+  },
+  "containerDefinitions": [
+    {
+      "name": "api",
+      "essential": true,
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/api:t001",
+      "portMappings": [
+        {
+          "containerPort": 8000,
+          "hostPort": 8000,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "AWS_REGION",
+          "value": "ap-northeast-2"
+        },
+        {
+          "name": "BIKEPULSE_BUCKET",
+          "value": "bikepulse-905765459883-ap-northeast-2"
+        },
+        {
+          "name": "REGISTRY_TABLE",
+          "value": "bikepulse-dev-model-registry"
+        },
+        {
+          "name": "MODEL_ID",
+          "value": "bike-demand"
+        },
+        {
+          "name": "MODEL_VERSION",
+          "value": "mv001"
+        },
+        {
+          "name": "APP_ENV",
+          "value": "staging"
+        },
+        {
+          "name": "ENABLE_DEMO_ENDPOINTS",
+          "value": "false"
+        }
+      ],
+      "healthCheck": {
+        "command": [
+          "CMD",
+          "python",
+          "/app/healthcheck.py"
+        ],
+        "interval": 30,
+        "timeout": 5,
+        "retries": 3,
+        "startPeriod": 120
+      },
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/bikepulse-dev/api",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
