@@ -1,0 +1,26 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RunIngestionTask",
+      "Effect": "Allow",
+      "Action": [
+        "ecs:RunTask"
+      ],
+      "Resource": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-ingestion-task:*"
+    },
+    {
+      "Sid": "PassIngestionTaskRole",
+      "Effect": "Allow",
+      "Action": [
+        "iam:PassRole"
+      ],
+      "Resource": "arn:aws:iam::905765459883:role/bikepulse-dev-ingestion-task-role",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": "ecs-tasks.amazonaws.com"
+        }
+      }
+    }
+  ]
+}

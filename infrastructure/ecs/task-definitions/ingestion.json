@@ -1,0 +1,44 @@
+{
+  "family": "bikepulse-dev-ingestion-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
+  "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ingestion-task-role",
+  "runtimePlatform": {
+    "operatingSystemFamily": "LINUX",
+    "cpuArchitecture": "X86_64"
+  },
+  "containerDefinitions": [
+    {
+      "name": "ingestion",
+      "essential": true,
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/processor:s001",
+      "environment": [
+        {
+          "name": "BIKEPULSE_BUCKET",
+          "value": "bikepulse-905765459883-ap-northeast-2"
+        },
+        {
+          "name": "INGESTION_TABLE",
+          "value": "bikepulse-dev-ingestion-events"
+        },
+        {
+          "name": "AWS_REGION",
+          "value": "ap-northeast-2"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/bikepulse-dev/ingestion",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

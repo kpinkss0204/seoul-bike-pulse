@@ -1,0 +1,3 @@
+{
+  "Policy": "{\"Version\": \"2012-10-17\", \"Statement\": [{\"Sid\": \"AllowEventBridgeDLQDelivery\", \"Effect\": \"Allow\", \"Principal\": {\"Service\": \"events.amazonaws.com\"}, \"Action\": \"sqs:SendMessage\", \"Resource\": \"arn:aws:sqs:ap-northeast-2:905765459883:bikepulse-dev-ingestion-dlq\", \"Condition\": {\"ArnEquals\": {\"aws:SourceArn\": \"arn:aws:events:ap-northeast-2:905765459883:rule/bikepulse-dev-s3-ingestion\"}}}]}"
+}

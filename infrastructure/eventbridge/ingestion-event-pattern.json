@@ -1,0 +1,22 @@
+{
+  "source": [
+    "aws.s3"
+  ],
+  "detail-type": [
+    "Object Created"
+  ],
+  "detail": {
+    "bucket": {
+      "name": [
+        "bikepulse-905765459883-ap-northeast-2"
+      ]
+    },
+    "object": {
+      "key": [
+        {
+          "prefix": "raw/incoming/source=uci-seoul-bike/version=dv002/"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadIncomingVersions",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:GetObjectVersion"
+      ],
+      "Resource": "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/raw/incoming/source=uci-seoul-bike/version=dv002/*"
+    },
+    {
+      "Sid": "WriteIngestionReports",
+      "Effect": "Allow",
+      "Action": [
+        "s3:PutObject"
+      ],
+      "Resource": "arn:aws:s3:::bikepulse-905765459883-ap-northeast-2/monitoring/ingestion/version=dv002/*"
+    },
+    {
+      "Sid": "ManageIngestionLedger",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:PutItem",
+        "dynamodb:GetItem",
+        "dynamodb:UpdateItem"
+      ],
+      "Resource": "arn:aws:dynamodb:ap-northeast-2:905765459883:table/bikepulse-dev-ingestion-events"
+    }
+  ]
+}

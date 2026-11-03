@@ -83,3 +83,7 @@ temp/
 /data/registry/
 # Local Step Functions execution inputs and results
 /data/pipeline/
+# Local ingestion test inputs and execution data
+/data/ingestion/
+# Local backup of bucket notification configuration
+/infrastructure/eventbridge/s3-notification-before.json
