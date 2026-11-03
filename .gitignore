@@ -81,3 +81,5 @@ temp/
 *.joblib
 # Local DynamoDB registry execution results
 /data/registry/
+# Local Step Functions execution inputs and results
+/data/pipeline/

@@ -1,0 +1,50 @@
+{
+  "family": "bikepulse-dev-processor-task",
+  "taskRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-gate-task-role",
+  "executionRoleArn": "arn:aws:iam::905765459883:role/bikepulse-dev-ecs-execution-role",
+  "networkMode": "awsvpc",
+  "containerDefinitions": [
+    {
+      "name": "processor",
+      "image": "905765459883.dkr.ecr.ap-northeast-2.amazonaws.com/bikepulse/processor:r001",
+      "portMappings": [],
+      "essential": true,
+      "command": [
+        "--gate",
+        "raw"
+      ],
+      "environment": [
+        {
+          "name": "BIKEPULSE_BUCKET",
+          "value": "bikepulse-905765459883-ap-northeast-2"
+        }
+      ],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/bikepulse-dev/pipeline-gate",
+          "awslogs-region": "ap-northeast-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "systemControls": [],
+      "entryPoint": [
+        "python",
+        "-u",
+        "/app/pipeline_gate.py"
+      ]
+    }
+  ],
+  "volumes": [],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  }
+}

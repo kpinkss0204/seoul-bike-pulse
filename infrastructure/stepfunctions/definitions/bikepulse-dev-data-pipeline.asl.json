@@ -1,0 +1,916 @@
+{
+  "Comment": "BikePulse Step R - immutable data checks and optional candidate training",
+  "StartAt": "CheckInput",
+  "States": {
+    "CheckInput": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.simulate_failure",
+          "BooleanEquals": true,
+          "Next": "IntentionalFailure"
+        },
+        {
+          "Variable": "$.mode",
+          "StringEquals": "validate_only",
+          "Next": "RawQualityGate"
+        },
+        {
+          "Variable": "$.mode",
+          "StringEquals": "train_candidate",
+          "Next": "RawQualityGate"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "PipelineFailed": {
+      "Type": "Fail",
+      "Error": "BikePulsePipelineFailed",
+      "Cause": "Review the preceding state and ECS CloudWatch Logs"
+    },
+    "ValidationCompleted": {
+      "Type": "Succeed"
+    },
+    "CandidateTrainingCompleted": {
+      "Type": "Succeed"
+    },
+    "RawQualityGate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "raw"
+              ],
+              "Environment": []
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "RawQualityGateExitCheck"
+    },
+    "RawQualityGateExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "CuratedQualityGate"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "CuratedQualityGate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "curated"
+              ],
+              "Environment": []
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "CuratedQualityGateExitCheck"
+    },
+    "CuratedQualityGateExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "FeatureQualityGate"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "FeatureQualityGate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "feature"
+              ],
+              "Environment": [
+                {
+                  "Name": "FEATURE_REPORT_KEY",
+                  "Value.$": "$.feature_report_key"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "FeatureQualityGateExitCheck"
+    },
+    "FeatureQualityGateExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "ChoosePipelineMode"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "ChoosePipelineMode": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.mode",
+          "StringEquals": "validate_only",
+          "Next": "ValidationCompleted"
+        },
+        {
+          "Variable": "$.mode",
+          "StringEquals": "train_candidate",
+          "Next": "TrainBaseline"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "TrainBaseline": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "trainer",
+              "Command": [
+                "python",
+                "-u",
+                "/app/training_worker.py"
+              ],
+              "Environment": [
+                {
+                  "Name": "FEATURE_REPORT_KEY",
+                  "Value.$": "$.feature_report_key"
+                },
+                {
+                  "Name": "TRAIN_RUN_ID",
+                  "Value.$": "$.m_run_id"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 3600,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "TrainBaselineExitCheck"
+    },
+    "TrainBaselineExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "BaselineQualityGate"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "BaselineQualityGate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "baseline"
+              ],
+              "Environment": [
+                {
+                  "Name": "FEATURE_REPORT_KEY",
+                  "Value.$": "$.feature_report_key"
+                },
+                {
+                  "Name": "TRAIN_RUN_ID",
+                  "Value.$": "$.m_run_id"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "BaselineQualityGateExitCheck"
+    },
+    "BaselineQualityGateExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "TuneXGBoost"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "TuneXGBoost": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:17",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "trainer",
+              "Command": [
+                "python",
+                "-u",
+                "/app/xgboost_worker.py"
+              ],
+              "Environment": [
+                {
+                  "Name": "FEATURE_REPORT_KEY",
+                  "Value.$": "$.feature_report_key"
+                },
+                {
+                  "Name": "BASELINE_RUN_ID",
+                  "Value.$": "$.m_run_id"
+                },
+                {
+                  "Name": "XGB_RUN_ID",
+                  "Value.$": "$.n_run_id"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 14400,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "TuneXGBoostExitCheck"
+    },
+    "TuneXGBoostExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "XGBoostQualityGate"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "XGBoostQualityGate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "xgboost"
+              ],
+              "Environment": [
+                {
+                  "Name": "FEATURE_REPORT_KEY",
+                  "Value.$": "$.feature_report_key"
+                },
+                {
+                  "Name": "TRAIN_RUN_ID",
+                  "Value.$": "$.m_run_id"
+                },
+                {
+                  "Name": "XGB_RUN_ID",
+                  "Value.$": "$.n_run_id"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "XGBoostQualityGateExitCheck"
+    },
+    "XGBoostQualityGateExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "LockSelectedModel"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "LockSelectedModel": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-trainer-task:18",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "trainer",
+              "Command": [
+                "--mode",
+                "lock"
+              ],
+              "Environment": [
+                {
+                  "Name": "FEATURE_REPORT_KEY",
+                  "Value.$": "$.feature_report_key"
+                },
+                {
+                  "Name": "BASELINE_RUN_ID",
+                  "Value.$": "$.m_run_id"
+                },
+                {
+                  "Name": "XGB_RUN_ID",
+                  "Value.$": "$.n_run_id"
+                },
+                {
+                  "Name": "SELECTION_ID",
+                  "Value.$": "$.selection_id"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "LockSelectedModelExitCheck"
+    },
+    "LockSelectedModelExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "SelectionQualityGate"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "SelectionQualityGate": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "selection"
+              ],
+              "Environment": [
+                {
+                  "Name": "TRAIN_RUN_ID",
+                  "Value.$": "$.m_run_id"
+                },
+                {
+                  "Name": "XGB_RUN_ID",
+                  "Value.$": "$.n_run_id"
+                },
+                {
+                  "Name": "SELECTION_ID",
+                  "Value.$": "$.selection_id"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 900,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "SelectionQualityGateExitCheck"
+    },
+    "SelectionQualityGateExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "CandidateTrainingCompleted"
+        }
+      ],
+      "Default": "PipelineFailed"
+    },
+    "IntentionalFailure": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "Cluster": "arn:aws:ecs:ap-northeast-2:905765459883:cluster/bikepulse-dev-ecs",
+        "TaskDefinition": "arn:aws:ecs:ap-northeast-2:905765459883:task-definition/bikepulse-dev-processor-task:16",
+        "LaunchType": "FARGATE",
+        "PlatformVersion": "LATEST",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "Subnets": [
+              "subnet-0ddbb9042cd53dcaf"
+            ],
+            "SecurityGroups": [
+              "sg-0ce258c1bff6213ca"
+            ],
+            "AssignPublicIp": "DISABLED"
+          }
+        },
+        "Overrides": {
+          "ContainerOverrides": [
+            {
+              "Name": "processor",
+              "Command": [
+                "--gate",
+                "fail"
+              ],
+              "Environment": []
+            }
+          ]
+        }
+      },
+      "TimeoutSeconds": 300,
+      "ResultPath": "$.taskResult",
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "AmazonECS.Unknown"
+          ],
+          "IntervalSeconds": 10,
+          "MaxAttempts": 2,
+          "BackoffRate": 2
+        }
+      ],
+      "Catch": [
+        {
+          "ErrorEquals": [
+            "States.ALL"
+          ],
+          "ResultPath": "$.taskError",
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Next": "IntentionalFailureExitCheck"
+    },
+    "IntentionalFailureExitCheck": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsPresent": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "IsNumeric": true
+            },
+            {
+              "Variable": "$.taskResult.Containers[0].ExitCode",
+              "NumericEquals": 0
+            }
+          ],
+          "Next": "PipelineFailed"
+        }
+      ],
+      "Default": "PipelineFailed"
+    }
+  },
+  "TimeoutSeconds": 28800
+}
